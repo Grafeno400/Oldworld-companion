@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>High Elf Realms — Army Builder</title>
+<title>Old World Companion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <style>
@@ -241,7 +241,7 @@
       </button>
       <button class="home-btn" data-screen="armylist">
         <span class="home-btn-icon">📋</span>
-        <span class="home-btn-label">ARMY LIST</span>
+        <span class="home-btn-label">LISTA DE EJÉRCITO</span>
         <span class="home-btn-sub">Crea y gestiona tus listas de ejército</span>
       </button>
       <button class="home-btn" data-screen="glossary">
@@ -261,8 +261,8 @@
   <div id="screen-armylist" style="display:none;">
   <button class="secondary small back-btn" data-home>← MENÚ</button>
   <div class="titlebar">
-    <h1>OLD WORLD<br>ARMY BUILDER</h1>
-    <p>Warhammer: The Old World · datos del Arcane Journal</p>
+    <h1>CONSTRUCTOR<br>DE EJÉRCITOS</h1>
+    <p>Warhammer: The Old World · listas, objetos y magia</p>
   </div>
 
   <div class="tabs">
@@ -381,7 +381,7 @@
       </div>
     </div>
     <div class="panel" id="honoursPanel">
-      <h2>ELVEN HONOURS</h2>
+      <h2>ELVEN HONOURS <span style="color:#b8a888; font-size:9px;">(Honores Élficos)</span></h2>
       <p class="hint" style="margin-top:-4px;margin-bottom:10px;">Un personaje puede llevar una sola Elven Honour, que da equipo y reglas especiales únicas.</p>
       <div class="ref-grid" id="honoursGrid"></div>
     </div>
@@ -646,6 +646,74 @@ const MAGIC_ITEMS = [
 ];
 
 // Objetos mágicos exclusivos del Imperio de Hombres — verificados en Forces of Fantasy p.75-76 (vía tow.whfb.app)
+// Objetos Mágicos Comunes — reglamento base p.338-343 (vía tow.whfb.app, sep-2026). Disponibles para
+// CUALQUIER personaje de CUALQUIER ejército, aparte de su catálogo propio de facción. Los marcados
+// extremelyCommon (*) no cuentan para el límite de "solo un objeto de cada tipo" por personaje.
+const COMMON_MAGIC_ITEMS = [
+  // --- Armas ---
+  { id:'ogre_blade', name:"Ogre Blade", points:75, type:'Arma', restrictedTo:[], desc:"Combate. S+2, PA-2." },
+  { id:'cackling_blade', name:"Cackling Blade", points:65, type:'Arma', restrictedTo:[], desc:"Combate. S+1, PA-1. Si sale un 6 natural en los dados de Ataques Extra (+D6), el portador pierde 1 Herida de inmediato." },
+  { id:'sword_of_battle', name:"Sword of Battle", points:60, type:'Arma', restrictedTo:[], desc:"Combate. S+1, PA-1." },
+  { id:'duellists_blades', name:"Duellist's Blades", points:55, type:'Arma', restrictedTo:[], desc:"Combate. S sin modificar, PA-1." },
+  { id:'dragon_slaying_sword', name:"Dragon Slaying Sword", points:50, type:'Arma', restrictedTo:[], desc:"Combate. S sin modificar, sin PA." },
+  { id:'meteor_hammer', name:"Meteor Hammer", points:50, type:'Arma', restrictedTo:[], desc:"Combate. S sin modificar, PA-3. Al hacer la tirada Para Herir con esta arma, un 3+ es siempre éxito, sin importar la Resistencia del objetivo." },
+  { id:'headsmans_axe', name:"Headsman's Axe", points:45, type:'Arma', restrictedTo:[], desc:"Combate. S+1, PA-1." },
+  { id:'spelleater_axe', name:"Spelleater Axe", points:35, type:'Arma', restrictedTo:[], desc:"Combate. S sin modificar, PA-1." },
+  { id:'giant_blade', name:"Giant Blade", points:30, type:'Arma', restrictedTo:[], desc:"Combate. S+1, sin PA." },
+  { id:'hell_forged_axe', name:"Hell-forged Axe", points:30, type:'Arma', restrictedTo:[], desc:"Combate. S+1, PA-1." },
+  { id:'sword_of_sorrow', name:"Sword of Sorrow", points:30, type:'Arma', restrictedTo:[], desc:"Proyectil, 30\". F5, PA-1. Es un arma de disparo, no se puede usar en combate. No se permite salvación de Ward ni Regeneración contra sus heridas." },
+  { id:'sword_of_swiftness', name:"Sword of Swiftness", points:25, type:'Arma', restrictedTo:[], desc:"Combate. S sin modificar, sin PA." },
+  { id:'berserker_blade', name:"Berserker Blade", points:20, type:'Arma', restrictedTo:[], desc:"Combate. S+1, sin PA. El portador gana Impetuoso." },
+  { id:'sword_of_might', name:"Sword of Might*", points:20, type:'Arma', restrictedTo:[], extremelyCommon:true, desc:"Combate. S+1, PA-1. Extremadamente Común." },
+  { id:'biting_blade', name:"Biting Blade", points:15, type:'Arma', restrictedTo:[], desc:"Combate. S sin modificar, PA-2." },
+  { id:'sword_of_striking', name:"Sword of Striking*", points:15, type:'Arma', restrictedTo:[], extremelyCommon:true, desc:"Combate. S sin modificar, sin PA. En la fase de Combate, +1 a las tiradas Para Impactar del portador. Extremadamente Común." },
+  { id:'burning_blade', name:"Burning Blade*", points:5, type:'Arma', restrictedTo:[], extremelyCommon:true, desc:"Combate. S sin modificar, sin PA. Extremadamente Común." },
+  // --- Armadura ---
+  { id:'armour_of_destiny', name:"Armour of Destiny", points:70, type:'Armadura', restrictedTo:[], desc:"Armadura Pesada. Además, el portador tiene una salvación de Ward de 4+ contra cualquier herida." },
+  { id:'bedazzling_helm', name:"Bedazzling Helm", points:60, type:'Armadura', restrictedTo:[], desc:"Solo Infantería o Caballería. Se puede combinar con otra armadura. Mejora el valor de armadura del portador en 1 (máx. 2+). Además, cualquier enemigo que le ataque en la fase de Combate sufre -1 a sus tiradas Para Impactar." },
+  { id:'armour_silvered_steel', name:"Armour of Silvered Steel", points:40, type:'Armadura', restrictedTo:[], desc:"Armadura con valor fijo de 3+, que no se puede mejorar de ninguna forma." },
+  { id:'glittering_scales', name:"Glittering Scales", points:35, type:'Armadura', restrictedTo:[], desc:"Armadura Ligera. Además, una vez por turno, puedes obligar al rival a repetir una tirada Para Impactar hecha contra el portador." },
+  { id:'shield_warrior_true', name:"Shield of the Warrior True", points:30, type:'Armadura', restrictedTo:[], desc:"Es un escudo. Además, el portador tiene una salvación de Ward de 5+ contra heridas sufridas durante la fase de Disparo." },
+  { id:'levitating_shield', name:"Levitating Shield", points:25, type:'Armadura', restrictedTo:[], desc:"Solo Infantería. Es un escudo que se puede combinar con un arma con la regla Requiere Dos Manos en combate." },
+  { id:'spellshield', name:"Spellshield*", points:25, type:'Armadura', restrictedTo:[], extremelyCommon:true, desc:"Es un escudo. Además, salvación de Ward 5+ contra heridas causadas por un Proyectil Mágico, un Vórtice Mágico o un hechizo de Asalto. Extremadamente Común." },
+  { id:'armour_meteoric_iron', name:"Armour of Meteoric Iron", points:20, type:'Armadura', restrictedTo:[], desc:"Valor de armadura fijo de 5+, que no se puede mejorar ni empeorar de ninguna forma." },
+  { id:'trailblazers_hauberk', name:"Trailblazer's Hauberk", points:20, type:'Armadura', restrictedTo:[], desc:"Solo Infantería. Armadura Pesada. Además, el portador gana Cruza Cobertura y Exploradores." },
+  { id:'enchanted_shield', name:"Enchanted Shield*", points:10, type:'Armadura', restrictedTo:[], extremelyCommon:true, desc:"Es un escudo. Además, salvación de Ward 6+ contra heridas causadas por un ataque enemigo no mágico. Extremadamente Común." },
+  { id:'charmed_shield', name:"Charmed Shield*", points:5, type:'Armadura', restrictedTo:[], extremelyCommon:true, desc:"Es un escudo. Una vez por partida, da al portador una salvación de Ward de 5+ contra una única herida; tras usarla, pasa a ser un escudo normal y corriente. Extremadamente Común." },
+  // --- Talismanes ---
+  { id:'dawnstone', name:"Dawnstone", points:35, type:'Talismán', restrictedTo:[], desc:"El portador puede repetir cualquier salvación de Armadura de 1 natural." },
+  { id:'icon_of_fortitude', name:"Icon of Fortitude", points:35, type:'Talismán', restrictedTo:[], desc:"Solo Infantería o Caballería. El portador es inmune a la regla Heridas Múltiples (X): si sufre una herida de un ataque así, solo pierde 1 Herida." },
+  { id:'ironhide_talisman', name:"Ironhide Talisman", points:30, type:'Talismán', restrictedTo:[], desc:"Solo Infantería. Cualquier enemigo que impacte al portador en Disparo o Combate debe repetir los 6 naturales de su tirada Para Herir (no aplica a ataques que hieren automáticamente)." },
+  { id:'talisman_of_protection', name:"Talisman of Protection", points:30, type:'Talismán', restrictedTo:[], desc:"El portador tiene una salvación de Ward de 5+ contra cualquier herida." },
+  { id:'paymasters_coin', name:"Paymaster's Coin*", points:25, type:'Talismán', restrictedTo:[], extremelyCommon:true, desc:"Un uso. El portador puede repetir tiradas fallidas Para Impactar durante la fase de Combate. Extremadamente Común." },
+  { id:'obsidian_lodestone', name:"Obsidian Lodestone*", points:20, type:'Talismán', restrictedTo:[], extremelyCommon:true, desc:"Se pueden llevar hasta 3 copias. Con 1 copia: Resistencia a la Magia (-1); con 2: (-2); con 3: (-3). Extremadamente Común." },
+  { id:'luckstone', name:"Luckstone*", points:15, type:'Talismán', restrictedTo:[], extremelyCommon:true, desc:"Un uso. El portador puede repetir una única salvación de Armadura fallida. Extremadamente Común." },
+  // --- Objetos Arcanos (solo Hechiceros) ---
+  { id:'feedback_scroll', name:"Feedback Scroll", points:60, type:'Objeto Arcano', restrictedTo:[], desc:"Un uso. El portador puede usarlo en vez de un intento de Disipación (el hechizo se resuelve con normalidad). Después, tira 2D6: por cada resultado de 4+, el mago que lanzó el hechizo pierde 1 Herida." },
+  { id:'scroll_transmogrification', name:"Scroll of Transmogrification*", points:50, type:'Objeto Arcano', restrictedTo:[], extremelyCommon:true, desc:"Un uso. Se usa en vez de un intento de Disipación (el hechizo se resuelve con normalidad). Después, el mago que lanzó el hechizo debe sacar en 1D6 igual o menos que su Nivel de Hechicería, o se convierte en rana: no puede lanzar/disipar ni usar su equipo, y todas sus características (salvo Heridas) bajan a 1, hasta que en un Inicio de Turno saque 4+ en 1D6. Extremadamente Común." },
+  { id:'wand_of_jet', name:"Wand of Jet", points:45, type:'Objeto Arcano', restrictedTo:[], desc:"El portador aplica +1 a cualquiera de sus tiradas de Lanzamiento o Disipación. Si saca dobles naturales en una de esas tiradas, la vara se rompe y no se puede volver a usar." },
+  { id:'staff_of_quietude', name:"Staff of Quietude", points:35, type:'Objeto Arcano', restrictedTo:[], desc:"En la subfase de Mando, si no está en combate, el portador puede hacer una Prueba de Liderazgo: si la supera, se disipan todos los hechizos 'Permanece en Juego' activos en la mesa, incluidos los propios." },
+  { id:'lore_familiar', name:"Lore Familiar", points:30, type:'Objeto Arcano', restrictedTo:[], desc:"El portador no genera sus hechizos al azar: elige libremente qué hechizos conoce de su saber, incluido el hechizo de firma." },
+  { id:'scroll_of_disruption', name:"Scroll of Disruption", points:30, type:'Objeto Arcano', restrictedTo:[], desc:"Una vez por turno, el portador puede repetir una tirada de Disipación (se repiten todos los dados, incluidos los extra por otras reglas u objetos)." },
+  { id:'tome_of_spellcraft', name:"Tome of Spellcraft", points:30, type:'Objeto Arcano', restrictedTo:[], desc:"Una vez por turno, el portador puede repetir una tirada de Lanzamiento (se repiten todos los dados, incluidos los extra)." },
+  { id:'dispel_scroll', name:"Dispel Scroll*", points:20, type:'Objeto Arcano', restrictedTo:[], extremelyCommon:true, desc:"Un uso. Al intentar una Disipación, tira un dado extra y descarta el más bajo. Si saca doble 1 en dos de esos dados, el mago queda Superado en el Arte. Extremadamente Común." },
+  { id:'power_scroll', name:"Power Scroll*", points:20, type:'Objeto Arcano', restrictedTo:[], extremelyCommon:true, desc:"Un uso. Al lanzar un hechizo, tira un dado extra y descarta el más bajo. Si saca doble 1 en dos de esos dados, el hechizo sufre un Error de Lanzamiento. Extremadamente Común." },
+  { id:'arcane_familiar', name:"Arcane Familiar", points:15, type:'Objeto Arcano', restrictedTo:[], desc:"El portador conoce hechizos de 2 Saberes de Magia en vez de 1 (se tira por separado para cada saber; los duplicados se vuelven a tirar). Puede cambiar un hechizo generado al azar por el hechizo de firma de ese mismo saber." },
+  { id:'earthing_rod', name:"Earthing Rod", points:5, type:'Objeto Arcano', restrictedTo:[], desc:"Un uso. Si el portador sufre un Error de Lanzamiento, puede repetir el resultado en la Tabla de Error de Lanzamiento." },
+  // --- Objetos Encantados ---
+  { id:'wizarding_hat', name:"Wizarding Hat", points:45, type:'Objeto Encantado', restrictedTo:[], desc:"El portador es Hechicero Nv.1, con un hechizo generado al azar de un Saber de Magia a elección. También queda sujeto a la regla Estupidez." },
+  { id:'arch_lightning_rod', name:"Arch-Lightning Rod", points:40, type:'Objeto Encantado', restrictedTo:[], desc:"Un uso. En la subfase de Mando, si no está en combate, el portador puede hacer una Prueba de Liderazgo (sin modificar): si la supera, hasta tu próximo Inicio de Turno los enemigos no pueden usar la regla Volar (X)." },
+  { id:'flying_carpet', name:"Flying Carpet", points:40, type:'Objeto Encantado', restrictedTo:[], desc:"Solo Infantería Regular o Pesada. El portador gana Volar (8) y Zancada Veloz, pero no puede unirse a ninguna unidad." },
+  { id:'healing_potion', name:"Healing Potion*", points:35, type:'Objeto Encantado', restrictedTo:[], extremelyCommon:true, desc:"Un uso. En la subfase de Mando, el portador puede consumirla y recuperar D3 Heridas perdidas. Extremadamente Común." },
+  { id:'ruby_ring_of_ruin', name:"Ruby Ring of Ruin", points:35, type:'Objeto Encantado', restrictedTo:[], desc:"El portador puede lanzar el hechizo Fireball (Magia de Batalla) como hechizo ligado, con Nivel de Poder 1." },
+  { id:'potion_of_fervour', name:"Potion of Fervour", points:30, type:'Objeto Encantado', restrictedTo:[], desc:"Un uso. En la subfase de Mando, el portador puede consumirla: hasta el final del turno, gana +D3 a Ataques (máx. 10)." },
+  { id:'potion_of_strength', name:"Potion of Strength*", points:25, type:'Objeto Encantado', restrictedTo:[], extremelyCommon:true, desc:"Un uso. En Mando, hasta el final del turno, +D3 a Fuerza (máx. 10). Extremadamente Común." },
+  { id:'becalming_orb', name:"Becalming Orb", points:20, type:'Objeto Encantado', restrictedTo:[], desc:"Un uso. Hechizo ligado (Nivel de Poder 1, Maleficio, VL 8+, Alcance Uno mismo): hasta tu próximo Inicio de Turno, los magos enemigos a 15\" suman +2 al Valor de Lanzamiento de sus hechizos." },
+  { id:'potion_of_toughness', name:"Potion of Toughness*", points:20, type:'Objeto Encantado', restrictedTo:[], extremelyCommon:true, desc:"Un uso. En Mando, hasta el final del turno, +D3 a Resistencia (máx. 10). Extremadamente Común." },
+  { id:'potion_of_speed', name:"Potion of Speed*", points:10, type:'Objeto Encantado', restrictedTo:[], extremelyCommon:true, desc:"Un uso. En Mando, hasta el final del turno, +D3 a Iniciativa (máx. 10). Extremadamente Común." },
+  { id:'potion_of_foolhardiness', name:"Potion of Foolhardiness*", points:5, type:'Objeto Encantado', restrictedTo:[], extremelyCommon:true, desc:"Un uso. En Mando, hasta el final del turno, gana Inmune a la Psicología. Extremadamente Común." },
+];
+
 const EMPIRE_MAGIC_ITEMS = [
   { id:'runefang', name:"Runefang", points:100, type:'Arma', restrictedTo:[], desc:"Una de las 12 espadas forjadas para los caudillos de Sigmar. Al herir con ella, un resultado de 2+ es siempre éxito, sin importar la Resistencia del objetivo." },
   { id:'mace_helsturm', name:"Maza de Helsturm", points:65, type:'Arma', restrictedTo:[], desc:"Perfil doble a elegir cada asalto de combate. Usada por el primer Gran Teógono, con la fe de Sigmar capaz de derribar murallas." },
@@ -1141,11 +1209,81 @@ RULES_GLOSSARY["Guerreros de Nagarythe"] = {
   text: "Una unidad con esta regla solo puede ser acompañada por un personaje que tenga la Elven Honour Shadow Stalker."
 };
 
+// ---- Términos nuevos + alias de plural/género para que enlacen igual que su forma base (vía tow.whfb.app, sep-2026) ----
+RULES_GLOSSARY["Carga Furiosa"] = {
+  source: "Reglamento base — Reglas Especiales Universales (Furious Charge), p.171",
+  text: "Durante un turno en el que hizo un movimiento de carga de 3\" o más, el modelo gana +1 a Ataques."
+};
+RULES_GLOSSARY["Panda de Guerra"] = {
+  source: "Reglamento base — Reglas Especiales Universales (Warband), p.180 — mismo efecto que 'Banda de Guerra'",
+  text: "Salvo que esté huyendo, la unidad gana un modificador positivo a su Liderazgo igual a su Bonificación de Rango actual (máx. Ld10; no aplica en Pruebas de Contención ni al comprobar si debe cargar por Impetuoso). Si la mayoría de la unidad tiene esta regla, puede repetir su tirada de Carga. Un personaje sin esta regla no se beneficia aunque se una a una unidad que sí la tenga."
+};
+RULES_GLOSSARY["Horda"] = {
+  source: "Reglamento base — Reglas Especiales Universales (Horde), p.171",
+  text: "La unidad puede aumentar en 1 la Bonificación de Rango máxima permitida por su tipo de tropa."
+};
+RULES_GLOSSARY["Grito de Ánimo"] = {
+  source: "Reglamento base — Reglas Especiales Universales (Rallying Cry)",
+  text: "En la subfase de Mando, si no está en combate, el personaje puede nominar una unidad amiga que huye dentro de su alcance de mando para que haga inmediatamente una Prueba de Reagrupación. Si la falla, puede volver a intentarlo con normalidad en la subfase de Reagrupación."
+};
+RULES_GLOSSARY["Miedo a los Elfos"] = {
+  source: "Special Rules — Orc & Goblin Tribes (Fear of Elves)",
+  text: "Los Elfos de cualquier tipo causan Miedo a los modelos con esta regla."
+};
+RULES_GLOSSARY["Ignora el Pánico de Goblins"] = {
+  source: "Special Rules — Orc & Goblin Tribes (Ignore Goblin Panic)",
+  text: "La unidad no necesita hacer una Prueba de Pánico cuando una unidad amiga de Goblins (de cualquier tipo, incluidas máquinas de guerra o carros tripulados enteramente por Goblins) es destruida, se rompe y huye, o la atraviesa huyendo, estando a 6\" o menos."
+};
+RULES_GLOSSARY["Ignora el Pánico"] = {
+  source: "Special Rules — Orc & Goblin Tribes (Ignore Panic)",
+  text: "La unidad no necesita hacer una Prueba de Pánico cuando una unidad amiga sin esta misma regla es destruida, o se rompe y huye del combate, estando cerca."
+};
+RULES_GLOSSARY["Panda Variopinta"] = {
+  source: "Reglamento base — Reglas Especiales Universales (Motley Crew) — mismo efecto que 'Equipo Motley'",
+  text: "La unidad puede mezclar miniaturas del mismo tipo con equipo distinto, o incluso de tipos distintos. Armas diferentes tiran lotes de dados separados; con armadura distinta se usa la de la mayoría; las bajas se reparten lo más equitativamente posible."
+};
+RULES_GLOSSARY["Cuchillas"] = {
+  source: "Special Rules — Orc & Goblin Tribes (Choppas)",
+  text: "⚠️ Confirmado que existe y la llevan las armas de mano de tropas orcas (p.ej. tripulación de Carros de Jabalíes), pero el texto mecánico exacto de la edición actual no está verificado en las fuentes consultadas — no se aplica a monturas ni a armas mágicas."
+};
+RULES_GLOSSARY["Perfora Blindaje"] = {
+  source: "Reglamento base — Perfil de arma",
+  text: "No es una regla especial en sí, sino la característica de Perforación de Blindaje (PA) propia de un arma o ataque natural: el valor entre paréntesis se resta directamente al valor de Salvación de Armadura del objetivo."
+};
+RULES_GLOSSARY["La Flecha de Kurnous"] = {
+  source: "Special Rules — Wood Elf Realms (Arrow of Kurnous)",
+  text: "El personaje puede disparar su arco incluso en la fase de Combate, además de en la de Disparo, representando la puntería sobrenatural otorgada por Kurnous, el Dios Cazador."
+};
+RULES_GLOSSARY["Espíritu del Bosque"] = {
+  source: "Special Rules — Wood Elf Realms (Spirit of the Forest)",
+  text: "El modelo está formado por magia y madera viva de Athel Loren en vez de carne. Suele combinarse con Inmune a Psicología y una vulnerabilidad especial a Ataques Llameantes."
+};
+RULES_GLOSSARY["Tatuajes Talismánicos"] = {
+  source: "Special Rules — Wood Elf Realms (Ritual Tattoos)",
+  text: "El modelo tiene una salvación especial (Ward) contra heridas causadas por hechizos, gracias a los tatuajes rituales grabados en su piel por los Hechiceros de Athel Loren."
+};
+RULES_GLOSSARY["Ignora Cobertura"] = {
+  source: "Reglamento base — Reglas Especiales Universales (Ignores Cover)",
+  text: "El modelo que dispara ignora cualquier modificador de impacto por cobertura parcial o total del objetivo."
+};
+// Alias de plural/género: mismo contenido que su término base, para que el hipervínculo también
+// funcione cuando el texto de una unidad usa la forma en plural o femenino.
+RULES_GLOSSARY["Impetuosos"] = RULES_GLOSSARY["Impetuoso"];
+RULES_GLOSSARY["Evasivos"] = RULES_GLOSSARY["Evasivo"];
+RULES_GLOSSARY["Obstinados"] = RULES_GLOSSARY["Obstinado"];
+RULES_GLOSSARY["Obstinadas"] = RULES_GLOSSARY["Obstinado"];
+RULES_GLOSSARY["Escaramuzadoras"] = RULES_GLOSSARY["Escaramuzadores"];
+RULES_GLOSSARY["Volador"] = RULES_GLOSSARY["Volar"];
+RULES_GLOSSARY["Voladora"] = RULES_GLOSSARY["Volar"];
+RULES_GLOSSARY["Inmune a Psicología"] = RULES_GLOSSARY["Inmune a la Psicología"];
+RULES_GLOSSARY["Inmunes a Psicología"] = RULES_GLOSSARY["Inmune a la Psicología"];
+RULES_GLOSSARY["Golpes de Impacto"] = RULES_GLOSSARY["Primer Impacto"];
+
 function renderRulesText(text){
   // Convierte cualquier término conocido del glosario en un <span> clicable, dejando el resto igual.
   let html = text;
   Object.keys(RULES_GLOSSARY).forEach(term=>{
-    const re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')(?![^<]*>)', 'g');
+    const re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')(?![^<]*>)(?![a-zA-ZÀ-ÿ])', 'g');
     html = html.replace(re, `<span class="rule-link" data-rule="${term}">$1</span>`);
   });
   return html;
@@ -1366,7 +1504,7 @@ const UNITS = [
     cmd:{ champion:{cost:6,label:'Guardián',itemBudget:25}, standard:{cost:6,label:'Abanderado'}, musician:{cost:6,label:'Músico'} } },
   { faction:'high_elf', id:'lion_chariot', name:"Lion Chariot of Chrace", role:'Especiales', points:105, sprite:'🛞', list:['chracian_warhost'], category:'special', approx:true,
     blurb:"Carro de guerra tirado por leones de Chrace, reservado para los caudillos más honrados.",
-    stats:{M:8,WS:5,BS:0,S:4,T:4,W:3,I:4,A:0,Ld:8}, rules:"⚠️ Stats aproximados (basados en el Carro de Cacique del Arcane Journal, mismo coste 105pts que sí está confirmado por analogía de armas). Carro tirado por leones de Chrace." },
+    stats:{M:8,WS:5,BS:0,S:4,T:4,W:3,I:4,A:0,Ld:8}, rules:"⚠️ Estadísticas aproximadas (basados en el Carro de Cacique del Arcane Journal, mismo coste 105pts que sí está confirmado por analogía de armas). Carro tirado por leones de Chrace." },
   { faction:'high_elf', id:'shadow_warriors', name:"Shadow Warriors", role:'Singulares', points:14, perModel:true, sprite:'🥷', list:['chracian_warhost','sea_guard','grand_army'], category:'rare',
     blurb:"Exploradores sigilosos de Nagarythe, maestros del arco largo y la emboscada.",
     stats:{M:5,WS:5,BS:5,S:3,T:3,W:1,I:5,A:1,Ld:8}, rules:"Reflejos Élficos, Evasivos, Disparar y Huir, Armas de Ithilmar, Cruza Cobertura, Exploradores (Scouts), Escaramuzadores, Veterano, Guerreros de Nagarythe. Campeón (Shadow-walker) +6pts/unidad, hasta 25pts en objetos. 0-1 unidad puede tener Emboscadores, Corredores de Carro o Vuelo en Retirada (+1pt/modelo).",
@@ -1389,10 +1527,10 @@ const UNITS = [
     options:[ {id:'bolt_thrower', label:'Ballesta-águila (eagle-eye bolt thrower)', cost:25, per:'unit'} ] },
   { faction:'high_elf', id:'phoenix_flame_frost', name:"Flamespyre/Frostheart Phoenix", role:'Singulares', points:200, sprite:'🔥', list:['sea_guard','grand_army'], category:'rare', approx:true,
     blurb:"Ave fénix mítica renacida del fuego o del hielo, montura de héroes legendarios.",
-    stats:{M:7,WS:5,BS:0,S:5,T:5,W:5,I:3,A:4,Ld:8}, rules:"⚠️ Stats aproximados (no verificados). Confirmado que existe como elección Rara (0-1 por 1.000, sin contar monturas de personaje) y como montura de Príncipe/Noble/Archimago/Mago con la Elven Honour 'Anointed of Asuryan' (+170 Flamespyre / +205 Frostheart)." },
+    stats:{M:7,WS:5,BS:0,S:5,T:5,W:5,I:3,A:4,Ld:8}, rules:"⚠️ Estadísticas aproximadas (no verificados). Confirmado que existe como elección Rara (0-1 por 1.000, sin contar monturas de personaje) y como montura de Príncipe/Noble/Archimago/Mago con la Elven Honour 'Anointed of Asuryan' (+170 Flamespyre / +205 Frostheart)." },
   { faction:'high_elf', id:'dragon_princes', name:"Dragon Princes of Caledor", role:'Especiales', points:32, perModel:true, sprite:'🐉', list:['grand_army'], category:'special', approx:true,
     blurb:"Caballería de élite de Caledor, herederos de la tradición de los Jinetes de Dragón.",
-    stats:{M:8,WS:6,BS:4,S:4,T:3,W:1,I:6,A:1,Ld:9}, rules:"⚠️ Stats aproximados (no verificados, pero confirmado que existen como 0-1 unidad por 1.000 pts en Especiales). Caballería de élite con lanza y armadura dracónica." },
+    stats:{M:8,WS:6,BS:4,S:4,T:3,W:1,I:6,A:1,Ld:9}, rules:"⚠️ Estadísticas aproximadas (no verificados, pero confirmado que existen como 0-1 unidad por 1.000 pts en Especiales). Caballería de élite con lanza y armadura dracónica." },
   { faction:'high_elf', id:'ellyrian_reavers', name:"Ellyrian Reavers", role:'Básicas/Singulares', points:16, perModel:true, sprite:'🐎', list:['sea_guard','grand_army'], category:'rare',
     blurb:"Jinetes rápidos y libres de Ellyrion, exploradores y hostigadores a caballo.",
     stats:{M:'-',WS:4,BS:4,S:3,T:3,W:1,I:4,A:1,Ld:8}, rules:"Corcel Élfico M9. Reflejos Élficos, Caballería Rápida, Orden Abierto, Zancada Veloz, Valor de las Eras. Campeón (Harbinger) +8pts/unidad, hasta 25pts en objetos. Puede llevar arcos cortos.",
@@ -1872,10 +2010,12 @@ function getUnitDef(id){ return ALL_UNITS.find(u=>u.id===id); }
 function unitsForComp(comp, category){ return ALL_UNITS.filter(u=>u.list.includes(comp) && u.category===category && u.faction===currentFaction); }
 const FACTION_ITEMS_MAP = { high_elf: MAGIC_ITEMS, empire: EMPIRE_MAGIC_ITEMS, wood_elf: WOOD_ELF_MAGIC_ITEMS, orc_goblin: ORC_GOBLIN_MAGIC_ITEMS };
 function findItem(iid){
+  const common = COMMON_MAGIC_ITEMS.find(m=>m.id===iid); if(common) return common;
   for(const key in FACTION_ITEMS_MAP){ const found = FACTION_ITEMS_MAP[key].find(m=>m.id===iid); if(found) return found; }
   return BATTLE_MARCH_ITEMS.find(m=>m.id===iid);
 }
-function factionItems(){ return FACTION_ITEMS_MAP[currentFaction] || MAGIC_ITEMS; }
+// Cada personaje puede elegir tanto del catálogo propio de su facción como de los Objetos Mágicos Comunes del reglamento base
+function factionItems(){ return [...(FACTION_ITEMS_MAP[currentFaction] || MAGIC_ITEMS), ...COMMON_MAGIC_ITEMS]; }
 function itemCost(entry){ let t=0; (entry.items||[]).forEach(iid=>{ const it=findItem(iid); if(it) t+=it.points; }); return t; }
 function champItemsCost(entry){ let t=0; (entry.champItems||[]).forEach(iid=>{ const it=findItem(iid); if(it) t+=it.points; }); return t; }
 function standardCost(entry){ const def=getUnitDef(entry.unitId); if(entry.standardBearer && def.standardBearer) return def.standardBearer.cost; return 0; }
@@ -2340,7 +2480,7 @@ function openSpitesEditor(idx){
   function currentSpend(){ return spitesCost(entry); }
   function draw(){
     card.innerHTML = `
-      <div class="stat-card-head" style="border-bottom:none;"><h3 style="font-size:12px;">FOREST SPITES: ${def.name}</h3></div>
+      <div class="stat-card-head" style="border-bottom:none;"><h3 style="font-size:12px;">FOREST SPITES <span style="color:#b8a888; font-size:9px;">(Fuegos Fatuos del Bosque)</span>: ${def.name}</h3></div>
       <div class="hint" style="margin-bottom:8px;">Presupuesto: ${currentSpend()} / ${budget} pts. No son objetos mágicos, e insensibles a nada que afecte a objetos mágicos. Cada Spite solo se puede llevar UNA VEZ en todo el ejército.</div>
       <div id="spitesList"></div>
       <button class="secondary close-btn" id="spitesDone">HECHO</button>
@@ -2376,10 +2516,19 @@ function openSpitesEditor(idx){
 // ---- Magic items editor ----
 function openItemsEditor(idx){
   const entry = army[idx]; const def = getUnitDef(entry.unitId); const budget = def.itemBudget || 0;
-  let eligible = factionItems().filter(it => it.restrictedTo.length === 0 || it.restrictedTo.includes(currentComp));
+  let eligible = factionItems().filter(it => (it.restrictedTo.length === 0 || it.restrictedTo.includes(currentComp)) && (it.type !== 'Objeto Arcano' || def.wizard));
   if(listMode === 'battle_march') eligible = eligible.concat(BATTLE_MARCH_ITEMS);
   const card = document.getElementById('statCard');
   function currentSpend(){ return itemCost(entry); }
+  // Solo se puede llevar un objeto de cada tipo, salvo que sea Extremadamente Común
+  function typeTakenByOther(it, excludingId){
+    if(it.extremelyCommon) return false;
+    return (entry.items||[]).some(iid=>{
+      if(iid === excludingId) return false;
+      const other = findItem(iid);
+      return other && other.type === it.type && !other.extremelyCommon;
+    });
+  }
   function draw(){
     card.innerHTML = `
       <div class="stat-card-head" style="border-bottom:none;"><h3 style="font-size:12px;">OBJETOS: ${def.name}</h3></div>
@@ -2395,6 +2544,7 @@ function openItemsEditor(idx){
       if(isStandard && !entry.standardBearer) return;
       const checked = (entry.items||[]).includes(it.id);
       if(!isStandard && !checked && it.points > (budget - currentSpend())) return; // no cabe en lo que queda de presupuesto
+      if(!isStandard && !checked && typeTakenByOther(it, it.id)) return; // ya lleva otro objeto de ese tipo (no Extremadamente Común)
       const row = document.createElement('div'); row.className='toggle-row';
       row.innerHTML = `<input type="checkbox" data-item="${it.id}" ${checked?'checked':''}><label class="item-clickable" style="cursor:pointer; text-decoration:underline dotted;">${it.name} (${it.points}pts, ${it.type})${(it.restrictedTo&&it.restrictedTo.length)?' <span class="badge badge-restricted">excl.</span>':''}</label>`;
       list.appendChild(row);
@@ -2429,10 +2579,18 @@ function openItemsEditor(idx){
 function openChampItemsEditor(idx){
   const entry = army[idx]; const def = getUnitDef(entry.unitId);
   const budget = def.cmd.champion.itemBudget || 0;
-  let eligible = factionItems().filter(it => it.type.indexOf('Estandarte')!==0 && (it.restrictedTo.length === 0 || it.restrictedTo.includes(currentComp)));
+  let eligible = factionItems().filter(it => it.type.indexOf('Estandarte')!==0 && it.type !== 'Objeto Arcano' && (it.restrictedTo.length === 0 || it.restrictedTo.includes(currentComp)));
   if(listMode === 'battle_march') eligible = eligible.concat(BATTLE_MARCH_ITEMS.filter(it=>it.type.indexOf('Estandarte')!==0));
   const card = document.getElementById('statCard');
   function currentSpend(){ return champItemsCost(entry); }
+  function typeTakenByOther(it, excludingId){
+    if(it.extremelyCommon) return false;
+    return (entry.champItems||[]).some(iid=>{
+      if(iid === excludingId) return false;
+      const other = findItem(iid);
+      return other && other.type === it.type && !other.extremelyCommon;
+    });
+  }
   function draw(){
     card.innerHTML = `
       <div class="stat-card-head" style="border-bottom:none;"><h3 style="font-size:12px;">OBJETOS DEL ${def.cmd.champion.label.toUpperCase()}</h3></div>
@@ -2444,6 +2602,7 @@ function openChampItemsEditor(idx){
     eligible.forEach(it=>{
       const checked = (entry.champItems||[]).includes(it.id);
       if(!checked && it.points > (budget - currentSpend())) return; // no cabe en lo que queda de presupuesto
+      if(!checked && typeTakenByOther(it, it.id)) return; // ya lleva otro objeto de ese tipo (no Extremadamente Común)
       const row = document.createElement('div'); row.className='toggle-row';
       row.innerHTML = `<input type="checkbox" data-item="${it.id}" ${checked?'checked':''}><label class="item-clickable" style="cursor:pointer; text-decoration:underline dotted;">${it.name} (${it.points}pts, ${it.type})${(it.restrictedTo&&it.restrictedTo.length)?' <span class="badge badge-restricted">excl.</span>':''}</label>`;
       list.appendChild(row);
@@ -2638,7 +2797,7 @@ function renderReference(){
 
 function renderItemsTab(){
   const itemsWrap = document.getElementById('magicItemsGrid'); itemsWrap.innerHTML = '';
-  const catalog = factionItems();
+  const catalog = FACTION_ITEMS_MAP[currentFaction] || MAGIC_ITEMS;
   const CATALOG_LABELS = { high_elf:'HIGH ELF REALMS', empire:'IMPERIO DE HOMBRES', wood_elf:'ELFOS SILVANOS', orc_goblin:'ORCOS Y GOBLINS' };
   const catalogLabel = CATALOG_LABELS[currentFaction] || currentFaction;
   const h0 = document.createElement('h2'); h0.textContent = 'OBJETOS MÁGICOS — ' + catalogLabel; itemsWrap.appendChild(h0);
@@ -2649,6 +2808,23 @@ function renderItemsTab(){
     catalog.filter(i=>i.type===type).forEach(it=>{
       const details = document.createElement('details'); details.className='ref-item-toggle';
       details.innerHTML = `<summary class="ref-name"><span>${it.name}${it.restrictedTo.length?' <span class="badge badge-restricted">'+(it.restrictedTo.includes('chracian_warhost')?'Chracian':'Sea Guard')+'</span>':''}</span><span>${it.points}p</span></summary><div class="ref-desc">${renderRulesText(it.desc)}</div>`;
+      grid.appendChild(details);
+    });
+    itemsWrap.appendChild(grid);
+  });
+
+  const h5 = document.createElement('h2'); h5.textContent = 'OBJETOS MÁGICOS COMUNES (cualquier ejército)'; h5.style.marginTop='16px';
+  itemsWrap.appendChild(h5);
+  const commonHint = document.createElement('p'); commonHint.className='hint'; commonHint.style.marginTop='-4px';
+  commonHint.textContent = 'Disponibles para cualquier personaje de cualquier facción, aparte de su catálogo propio. Los marcados con * son Extremadamente Comunes: no cuentan para el límite de "solo un objeto de cada tipo" por personaje.';
+  itemsWrap.appendChild(commonHint);
+  const commonTypes = [...new Set(COMMON_MAGIC_ITEMS.map(i=>i.type))];
+  commonTypes.forEach(type=>{
+    const h = document.createElement('h3'); h.textContent = type + 's'; itemsWrap.appendChild(h);
+    const grid = document.createElement('div'); grid.className='ref-grid';
+    COMMON_MAGIC_ITEMS.filter(i=>i.type===type).forEach(it=>{
+      const details = document.createElement('details'); details.className='ref-item-toggle';
+      details.innerHTML = `<summary class="ref-name"><span>${it.name}</span><span>${it.points}p</span></summary><div class="ref-desc">${renderRulesText(it.desc)}</div>`;
       grid.appendChild(details);
     });
     itemsWrap.appendChild(grid);
@@ -2827,6 +3003,7 @@ function buildKnowledgeBase(){
   });
   MAGIC_ITEMS.forEach(it=> kb.push({ cat:'Objeto (Altos Elfos)', name:it.name, desc:it.desc, tag:it.points+'pts · '+it.type }));
   EMPIRE_MAGIC_ITEMS.forEach(it=> kb.push({ cat:'Objeto (Imperio)', name:it.name, desc:it.desc, tag:it.points+'pts · '+it.type }));
+  COMMON_MAGIC_ITEMS.forEach(it=> kb.push({ cat:'Objeto Común (cualquier ejército)', name:it.name, desc:it.desc, tag:it.points+'pts · '+it.type }));
   WOOD_ELF_MAGIC_ITEMS.forEach(it=> kb.push({ cat:'Objeto (Elfos Silvanos)', name:it.name, desc:it.desc, tag:it.points+'pts · '+it.type }));
   ORC_GOBLIN_MAGIC_ITEMS.forEach(it=> kb.push({ cat:'Objeto (Orcos y Goblins)', name:it.name, desc:it.desc, tag:it.points+'pts · '+it.type }));
   BATTLE_MARCH_ITEMS.forEach(it=> kb.push({ cat:'Objeto (Battle March)', name:it.name, desc:it.desc, tag:it.points+'pts · '+it.type }));
